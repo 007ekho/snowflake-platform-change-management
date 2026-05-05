@@ -30,7 +30,13 @@ jobs:
               uses: snowflakedb/snowflake-cli-action@v2.0
               with:
                 cli-version: "3.16.0"
-                default-config-file-path: ".snowflake/config.toml"
+            - name: Setup Snowflake CLI Config
+              run: |
+                mkdir -p ~/.snowflake
+                cat > ~/.snowflake/config.toml << 'EOF'
+                [connections.cicd]
+                EOF
+                chmod 0600 ~/.snowflake/config.toml
 
             - name: DCM Plan
               id: plan
@@ -41,11 +47,11 @@ jobs:
                 SNOWFLAKE_CONNECTIONS_CICD_ROLE:      PLATFORM_DCM_ROLE
                 SNOWFLAKE_CONNECTIONS_CICD_WAREHOUSE: COMPUTE_WH
               run: |
-                snow --config-file .snowflake/config.toml dcm plan \
-                --target DEV \
-                --from DCM_Platform/ \
-                --connection cicd \
-                --format json > dcm_plan_output.json 2>&1 || true
+                snow dcm plan \
+                    --target DEV \
+                    --from DCM_Platform/ \
+                    --connection cicd \
+                    --format json > dcm_plan_output.json 2>&1 || true
                 cat dcm_plan_output.json
 
             - name: Comment Plan on PR
@@ -80,7 +86,14 @@ jobs:
               uses: snowflakedb/snowflake-cli-action@v2.0
               with:
                 cli-version: "3.16.0"
-                default-config-file-path: ".snowflake/config.toml"
+            - name: Setup Snowflake CLI Config
+              run: |
+                mkdir -p ~/.snowflake
+                cat > ~/.snowflake/config.toml << 'EOF'
+                [connections.cicd]
+                EOF
+                chmod 0600 ~/.snowflake/config.toml
+                
 
             - name: DCM Deploy
               env:
@@ -90,7 +103,7 @@ jobs:
                 SNOWFLAKE_CONNECTIONS_CICD_ROLE:      PLATFORM_DCM_ROLE
                 SNOWFLAKE_CONNECTIONS_CICD_WAREHOUSE: COMPUTE_WH
               run: |
-                snow --config-file .snowflake/config.toml dcm deploy \
+                snow dcm deploy \
                 --target DEV \
                 --from DCM_Platform/ \
                 --connection cicd
