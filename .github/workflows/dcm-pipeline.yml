@@ -29,7 +29,7 @@ jobs:
             - name: Install Snowflake CLI
               uses: snowflakedb/snowflake-cli-action@v2.0
               with:
-                cli-version: "latest"
+                cli-version: "3.16.0"
                 default-config-file-path: ".snowflake/config.toml"
 
             - name: DCM Plan
@@ -41,11 +41,11 @@ jobs:
                 SNOWFLAKE_CONNECTIONS_CICD_ROLE:      PLATFORM_DCM_ROLE
                 SNOWFLAKE_CONNECTIONS_CICD_WAREHOUSE: COMPUTE_WH
               run: |
-                snow dcm plan \
-                  --target DEV \
-                  --project-path DCM_Platform/ \
-                  --connection cicd \
-                  --format json > dcm_plan_output.json 2>&1 || true
+                snow --config-file .snowflake/config.toml dcm plan \
+                --target DEV \
+                --from DCM_Platform/ \
+                --connection cicd \
+                --format json > dcm_plan_output.json 2>&1 || true
                 cat dcm_plan_output.json
 
             - name: Comment Plan on PR
@@ -79,7 +79,7 @@ jobs:
             - name: Install Snowflake CLI
               uses: snowflakedb/snowflake-cli-action@v2.0
               with:
-                cli-version: "latest"
+                cli-version: "3.16.0"
                 default-config-file-path: ".snowflake/config.toml"
 
             - name: DCM Deploy
@@ -90,7 +90,7 @@ jobs:
                 SNOWFLAKE_CONNECTIONS_CICD_ROLE:      PLATFORM_DCM_ROLE
                 SNOWFLAKE_CONNECTIONS_CICD_WAREHOUSE: COMPUTE_WH
               run: |
-                snow dcm deploy \
-                  --target DEV \
-                  --project-path DCM_Platform \
-                  --connection cicd
+                snow --config-file .snowflake/config.toml dcm deploy \
+                --target DEV \
+                --from DCM_Platform/ \
+                --connection cicd
