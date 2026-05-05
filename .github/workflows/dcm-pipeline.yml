@@ -36,7 +36,7 @@ jobs:
                 cat > ~/.snowflake/config.toml << 'EOF'
                 [connections.cicd]
                 EOF
-                
+                chmod 0600 ~/.snowflake/config.toml
 
             - name: DCM Plan
               id: plan
@@ -92,6 +92,7 @@ jobs:
                 cat > ~/.snowflake/config.toml << 'EOF'
                 [connections.cicd]
                 EOF
+                chmod 0600 ~/.snowflake/config.toml
                 
 
             - name: DCM Deploy
