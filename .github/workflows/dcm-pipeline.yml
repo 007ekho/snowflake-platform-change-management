@@ -2,12 +2,12 @@ name: 'Snowflake Platform DCM'
 
 on:
     pull_request:
-        branches: ["main", "develop"]
+        branches: ["main"]
         paths:
             - 'DCM_Platform/**'
 
     push:
-        branches: ["develop"]
+        branches: ["main"]
         paths:
             - 'DCM_Platform/**'
 

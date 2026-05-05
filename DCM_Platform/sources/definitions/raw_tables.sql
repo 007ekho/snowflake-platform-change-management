@@ -44,3 +44,4 @@ DEFINE TABLE ANALYTICS{{env_suffix}}.RAW.products (
 )
 DATA_RETENTION_TIME_IN_DAYS = {{data_retention_days}}
 COMMENT = 'Product catalogue reference data';
+# updated
