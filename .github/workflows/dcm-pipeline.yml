@@ -71,11 +71,11 @@ jobs:
                     body: `#### Snowflake DCM Plan - Platform 📋\n\n<details><summary>Show Plan Output</summary>\n\n\`\`\`\n${planOutput}\n\`\`\`\n\n</details>\n\n*Merge to develop to deploy these changes to the DEV environment.*\n*Workflow: \`${context.workflow}\`, Actor: @${'${context.actor}'}*`
                   })
 
-    # On merge to develop: deploy
+    # On merge to main: deploy
     deploy-dev:
         name: 'DCM Deploy - Dev'
         runs-on: ubuntu-latest
-        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         environment: dev
 
         steps:
