@@ -34,3 +34,13 @@ DEFINE TABLE ANALYTICS{{env_suffix}}.RAW.platform_audit_log (
 )
 DATA_RETENTION_TIME_IN_DAYS = {{data_retention_days}}
 COMMENT = 'Platform-level audit trail for compliance and debugging';
+-- Products reference table
+DEFINE TABLE ANALYTICS{{env_suffix}}.RAW.products (
+  product_id   VARCHAR       NOT NULL  COMMENT 'Unique product identifier',
+  product_name VARCHAR(200)            COMMENT 'Product display name',
+  category     VARCHAR(100)            COMMENT 'Product category',
+  unit_price   NUMBER(10,2)            COMMENT 'Standard unit price',
+  load_time    TIMESTAMP_LTZ           COMMENT 'When record was loaded'
+)
+DATA_RETENTION_TIME_IN_DAYS = {{data_retention_days}}
+COMMENT = 'Product catalogue reference data';
