@@ -41,12 +41,11 @@ jobs:
                 SNOWFLAKE_CONNECTIONS_CICD_ROLE:      PLATFORM_DCM_ROLE
                 SNOWFLAKE_CONNECTIONS_CICD_WAREHOUSE: COMPUTE_WH
               run: |
-                snow dcm plan \
-                    --target DEV \
-                    --from DCM_Platform/ \
-                    --connection cicd \
-                    --config-file .snowflake/config.toml \
-                    --format json > dcm_plan_output.json 2>&1 || true
+                snow --config-file .snowflake/config.toml dcm plan \
+                --target DEV \
+                --from DCM_Platform/ \
+                --connection cicd \
+                --format json > dcm_plan_output.json 2>&1 || true
                 cat dcm_plan_output.json
 
             - name: Comment Plan on PR
@@ -91,8 +90,7 @@ jobs:
                 SNOWFLAKE_CONNECTIONS_CICD_ROLE:      PLATFORM_DCM_ROLE
                 SNOWFLAKE_CONNECTIONS_CICD_WAREHOUSE: COMPUTE_WH
               run: |
-                snow dcm deploy \
-                  --target DEV \
-                  --from DCM_Platform/ \
-                  --connection cicd \
-                  --config-file .snowflake/config.toml \
+                snow --config-file .snowflake/config.toml dcm deploy \
+                --target DEV \
+                --from DCM_Platform/ \
+                --connection cicd
