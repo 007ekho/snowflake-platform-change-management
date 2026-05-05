@@ -45,6 +45,7 @@ jobs:
                     --target DEV \
                     --from DCM_Platform/ \
                     --connection cicd \
+                    --config-file .snowflake/config.toml \
                     --format json > dcm_plan_output.json 2>&1 || true
                 cat dcm_plan_output.json
 
@@ -93,4 +94,5 @@ jobs:
                 snow dcm deploy \
                   --target DEV \
                   --from DCM_Platform/ \
-                  --connection cicd
+                  --connection cicd \
+                  --config-file .snowflake/config.toml \
