@@ -1,0 +1,12 @@
+# DCM output artifacts
+DCM_Platform/out/
+
+# Snowflake CLI
+.snowflake/
+
+# Secrets
+.env
+*.env
+
+# OS files
+.DS_Store

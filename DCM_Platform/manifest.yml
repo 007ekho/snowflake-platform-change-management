@@ -1,0 +1,47 @@
+manifest_version: 2
+type: DCM_PROJECT
+
+default_target: DEV
+
+targets:
+  DEV:
+    account_identifier: "BVULEZS-XKB22369"
+    project_name: "DCM_ADMIN.PROJECTS.PLATFORM_DEV"
+    project_owner: "PLATFORM_DCM_ROLE"
+    templating_config: DEV
+
+  STAGING:
+    account_identifier: "BVULEZS-XKB22369"
+    project_name: "DCM_ADMIN.PROJECTS.PLATFORM_STAGING"
+    project_owner: "PLATFORM_DCM_ROLE"
+    templating_config: STAGING
+
+  PROD:
+    account_identifier: "BVULEZS-XKB22369"
+    project_name: "DCM_ADMIN.PROJECTS.PLATFORM_PROD"
+    project_owner: "PLATFORM_DCM_ROLE"
+    templating_config: PROD
+
+templating:
+  defaults:
+    project_name: "analytics_platform"
+    auto_resume: true
+
+  configurations:
+    DEV:
+      env_suffix: "_DEV"
+      warehouse_size: "XSMALL"
+      auto_suspend: 60
+      data_retention_days: 1
+
+    STAGING:
+      env_suffix: "_STAGING"
+      warehouse_size: "SMALL"
+      auto_suspend: 120
+      data_retention_days: 7
+
+    PROD:
+      env_suffix: "_PROD"
+      warehouse_size: "MEDIUM"
+      auto_suspend: 300
+      data_retention_days: 30

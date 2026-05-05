@@ -1,0 +1,96 @@
+name: 'Snowflake Platform DCM'
+
+on:
+    pull_request:
+        branches: ["main", "develop"]
+        paths:
+            - 'DCM_Platform/**'
+
+    push:
+        branches: ["develop"]
+        paths:
+            - 'DCM_Platform/**'
+
+permissions:
+    contents: read
+    pull-requests: write
+
+jobs:
+    # On PR: run plan and post results as comment
+    plan:
+        name: 'DCM Plan - Dev'
+        runs-on: ubuntu-latest
+        if: github.event_name == 'pull_request'
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install Snowflake CLI
+              uses: snowflakedb/snowflake-cli-action@v2.0
+              with:
+                cli-version: "latest"
+                default-config-file-path: ".snowflake/config.toml"
+
+            - name: DCM Plan
+              id: plan
+              env:
+                SNOWFLAKE_CONNECTIONS_CICD_ACCOUNT:   ${{ secrets.SNOWFLAKE_ACCOUNT_NAME }}
+                SNOWFLAKE_CONNECTIONS_CICD_USER:      ${{ secrets.SNOWFLAKE_DEV_USER }}
+                SNOWFLAKE_CONNECTIONS_CICD_PASSWORD:  ${{ secrets.SNOWFLAKE_DEV_PASSWORD }}
+                SNOWFLAKE_CONNECTIONS_CICD_ROLE:      PLATFORM_DCM_ROLE
+                SNOWFLAKE_CONNECTIONS_CICD_WAREHOUSE: COMPUTE_WH
+              run: |
+                snow dcm plan \
+                  --target DEV \
+                  --project-path DCM_Platform/ \
+                  --connection cicd \
+                  --format json > dcm_plan_output.json 2>&1 || true
+                cat dcm_plan_output.json
+
+            - name: Comment Plan on PR
+              uses: actions/github-script@v7
+              if: github.event_name == 'pull_request'
+              with:
+                script: |
+                  const fs = require('fs');
+                  let planOutput = 'Plan output not available';
+                  try {
+                    planOutput = fs.readFileSync('dcm_plan_output.json', 'utf8');
+                  } catch(e) {}
+                  github.rest.issues.createComment({
+                    issue_number: context.issue.number,
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    body: `#### Snowflake DCM Plan - Platform 📋\n\n<details><summary>Show Plan Output</summary>\n\n\`\`\`\n${planOutput}\n\`\`\`\n\n</details>\n\n*Merge to develop to deploy these changes to the DEV environment.*\n*Workflow: \`${context.workflow}\`, Actor: @${'${context.actor}'}*`
+                  })
+
+    # On merge to develop: deploy
+    deploy-dev:
+        name: 'DCM Deploy - Dev'
+        runs-on: ubuntu-latest
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        environment: dev
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install Snowflake CLI
+              uses: snowflakedb/snowflake-cli-action@v2.0
+              with:
+                cli-version: "latest"
+                default-config-file-path: ".snowflake/config.toml"
+
+            - name: DCM Deploy
+              env:
+                SNOWFLAKE_CONNECTIONS_CICD_ACCOUNT:   ${{ secrets.SNOWFLAKE_ACCOUNT_NAME }}
+                SNOWFLAKE_CONNECTIONS_CICD_USER:      ${{ secrets.SNOWFLAKE_DEV_USER }}
+                SNOWFLAKE_CONNECTIONS_CICD_PASSWORD:  ${{ secrets.SNOWFLAKE_DEV_PASSWORD }}
+                SNOWFLAKE_CONNECTIONS_CICD_ROLE:      PLATFORM_DCM_ROLE
+                SNOWFLAKE_CONNECTIONS_CICD_WAREHOUSE: COMPUTE_WH
+              run: |
+                snow dcm deploy \
+                  --target DEV \
+                  --project-path DCM_Platform \
+                  --connection cicd
