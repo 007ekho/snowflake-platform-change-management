@@ -42,10 +42,10 @@ jobs:
                 SNOWFLAKE_CONNECTIONS_CICD_WAREHOUSE: COMPUTE_WH
               run: |
                 snow dcm plan \
-                  --target DEV \
-                  --project-path DCM_Platform/ \
-                  --connection cicd \
-                  --format json > dcm_plan_output.json 2>&1 || true
+                    --target DEV \
+                    --from DCM_Platform/ \
+                    --connection cicd \
+                    --format json > dcm_plan_output.json 2>&1 || true
                 cat dcm_plan_output.json
 
             - name: Comment Plan on PR
@@ -92,5 +92,5 @@ jobs:
               run: |
                 snow dcm deploy \
                   --target DEV \
-                  --project-path DCM_Platform \
+                  --from DCM_Platform/ \
                   --connection cicd
