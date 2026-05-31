@@ -5,19 +5,19 @@ default_target: DEV
 
 targets:
   DEV:
-    account_identifier: "BVULEZS-XKB22369"
+    account_identifier: "your_account_identifier"
     project_name: "DCM_ADMIN.PROJECTS.PLATFORM_DEV"
     project_owner: "PLATFORM_DCM_ROLE"
     templating_config: DEV
 
   STAGING:
-    account_identifier: "BVULEZS-XKB22369"
+    account_identifier: "your_account_identifier"
     project_name: "DCM_ADMIN.PROJECTS.PLATFORM_STAGING"
     project_owner: "PLATFORM_DCM_ROLE"
     templating_config: STAGING
 
   PROD:
-    account_identifier: "BVULEZS-XKB22369"
+    account_identifier: "your_account_identifier"
     project_name: "DCM_ADMIN.PROJECTS.PLATFORM_PROD"
     project_owner: "PLATFORM_DCM_ROLE"
     templating_config: PROD
